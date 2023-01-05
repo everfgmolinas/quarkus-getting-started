@@ -8,17 +8,17 @@ services:
     image: postgres:15.1                # Usamos la imagen postgresql en la versión 15.1
     restart: always
     volumes:
-      - notifications-database:/var/lib/postgresql  # Crearemos un volumen para almacenar los datos de la db
+      - notifications-database:/var/lib/notficications_device  # Crearemos un volumen para almacenar los datos de la db
     ports:                               
       - "5433:5433"                     # Habilitamos el puerto 5432 para acceder a la db
     environment:                        # Creamos las variables del usuario contraseña y base de datos 
       - POSTGRES_USER= postgres              #   que se crea cuando inicia docker
       - POSTGRES_PASSWORD= admin
-      - POSTGRES_DB= postgres
+      - POSTGRES_DB= notficications_device
     networks:
       - boldo-network
   quarkus-notifications-backend:
-    image: quarkus-demo:latest
+    image: maven:3.6.3-jdk-11
     restart: always
     volumes:
       - "./:/home/"
@@ -28,7 +28,7 @@ services:
     environment:
       - POSTGRES_USER= postgres
       - POSTGRES_PASSWORD= admin
-      - POSTGRES_URL= "jdbc:postgresql://postgres_db:5433/postgres"
+      - POSTGRES_URL= jdbc:postgresql://postgres_db:5433/notficications_device
     ports:
       - "8080:8080"
     depends_on:
