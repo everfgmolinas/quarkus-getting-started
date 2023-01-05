@@ -1,0 +1,43 @@
+# Trabajaremos con la versión 3.7 docker
+version: '3.7'
+
+# Creamos los servicios
+services:
+  postgres_db:                                 # Creamos el servicios postgres_db para identificar la imagen
+    container_name: postgres_db
+    image: postgres:15.1                # Usamos la imagen postgresql en la versión 15.1
+    restart: always
+    volumes:
+      - notifications-database:/var/lib/postgresql  # Crearemos un volumen para almacenar los datos de la db
+    ports:                               
+      - "5433:5433"                     # Habilitamos el puerto 5432 para acceder a la db
+    environment:                        # Creamos las variables del usuario contraseña y base de datos 
+      - POSTGRES_USER= postgres              #   que se crea cuando inicia docker
+      - POSTGRES_PASSWORD= admin
+      - POSTGRES_DB= postgres
+    networks:
+      - boldo-network
+  quarkus-notifications-backend:
+    image: quarkus-demo:latest
+    restart: always
+    volumes:
+      - "./:/home/"
+    command: /bin/sh -c "cd /home/ && ./mvnw dependency:go-offline clean quarkus:dev
+            -Dquarkus.http.host=0.0.0.0 -DdebugHost=0.0.0.0 -Dmaven.wagon.http.ssl.insecure=true
+            -Dmaven.wagon.http.ssl.allowall=true"
+    environment:
+      - POSTGRES_USER= postgres
+      - POSTGRES_PASSWORD= admin
+      - POSTGRES_URL= "jdbc:postgresql://postgres_db:5433/postgres"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+    networks:
+      - boldo-network
+
+networks:
+  boldo-network:
+    external: true
+volumes:                                # Creamos y asignamos el volumen de docker
+  notifications-database:
