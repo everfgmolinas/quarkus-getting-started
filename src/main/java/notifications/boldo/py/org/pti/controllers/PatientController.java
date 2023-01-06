@@ -1,6 +1,7 @@
 package notifications.boldo.py.org.pti.controllers;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -13,8 +14,7 @@ import java.util.List;
 import notifications.boldo.py.org.pti.services.PatientService;
 
 @Path("/patient")
-@ApplicationScoped
-@Transactional
+@RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PatientController {
