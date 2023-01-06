@@ -3,32 +3,22 @@ version: '3.7'
 
 # Creamos los servicios
 services:
-  postgres_db:                                 # Creamos el servicios postgres_db para identificar la imagen
-    container_name: postgres_db
-    image: postgres:15.1                # Usamos la imagen postgresql en la versión 15.1
-    restart: always
-    volumes:
-      - notifications-database:/var/lib/notficications_device  # Crearemos un volumen para almacenar los datos de la db
-    ports:                               
-      - "5433:5433"                     # Habilitamos el puerto 5432 para acceder a la db
-    environment:                        # Creamos las variables del usuario contraseña y base de datos 
-      - POSTGRES_USER= postgres              #   que se crea cuando inicia docker
-      - POSTGRES_PASSWORD= admin
-      - POSTGRES_DB= notficications_device
-    networks:
-      - boldo-network
-  quarkus-notifications-backend:
+  quarkus-push-notifications-backend:
     image: maven:3.6.3-jdk-11
     restart: always
     volumes:
       - "./:/home/"
+      - mvn_dependencies:/root/.m2
     command: /bin/sh -c "cd /home/ && ./mvnw dependency:go-offline clean quarkus:dev
-            -Dquarkus.http.host=0.0.0.0 -DdebugHost=0.0.0.0 -Dmaven.wagon.http.ssl.insecure=true
-            -Dmaven.wagon.http.ssl.allowall=true"
+      -Dquarkus.http.host=0.0.0.0 -DdebugHost=0.0.0.0 -Dmaven.wagon.http.ssl.insecure=true
+      -Dmaven.wagon.http.ssl.allowall=true"
     environment:
-      - POSTGRES_USER= postgres
-      - POSTGRES_PASSWORD= admin
-      - POSTGRES_URL= jdbc:postgresql://postgres_db:5433/notficications_device
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_URL=jdbc:postgresql://postgres_db:5432/boldo-push-notifications
+      - LIST_CORS=""
+      - LIST_HEADERS=""
+      - ALLOW_CORS=false
     ports:
       - "8080:8080"
     depends_on:
@@ -36,8 +26,26 @@ services:
     networks:
       - boldo-network
 
+  postgres_db:                                 # Creamos el servicios postgres_db para identificar la imagen
+    container_name: postgres_db
+    image: postgres:15.1                # Usamos la imagen postgresql en la versión 15.1
+    restart: always
+    volumes:
+      - push-notification-database:/var/lib/postgres/data  # Crearemos un volumen para almacenar los datos de la db
+    ports:                               
+      - "5433:5432"                     # Habilitamos el puerto 5432 para acceder a la db
+    environment:                        # Creamos las variables del usuario contraseña y base de datos 
+      - POSTGRES_DB=boldo-push-notifications
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    networks:
+      - boldo-network
+
 networks:
   boldo-network:
     external: true
 volumes:                                # Creamos y asignamos el volumen de docker
-  notifications-database:
+  push-notification-database:
+    external: true
+  mvn_dependencies:
+    external: true

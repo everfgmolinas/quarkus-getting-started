@@ -8,60 +8,55 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import notifications.boldo.py.org.pti.entities.Patient;
-import notifications.boldo.py.org.pti.repositories.PatientRepository;
 
 import java.util.List;
+import notifications.boldo.py.org.pti.services.PatientService;
 
-@Path("/patient/")
+@Path("/patient")
 @ApplicationScoped
 @Transactional
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class PatienteController {
-    
-    PatientRepository patientRepository;
+public class PatientController {
 
     @Inject
-    public PatienteController(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
-    }
+    PatientService patientService;
+
 
     @GET
     public List<Patient> getPatients() {
-        return patientRepository.listAll();
+        return patientService.listPatients();
     }
 
     @GET
     @Path("/{id}")
     public Patient getPatient(@PathParam("id") Long id) {
-        return patientRepository.findById(id);
+        return patientService.find(id);
     }
 
     @GET
     @Path("/{patient_id}")
     public Patient getPatientByPatientId(@PathParam("patient_id") String id) {
-
-        return patientRepository.find("patient_id",id).firstResult();
+        return patientService.findById(id);
     }
 
     @POST
     public Response createPatient(Patient patient) {
-        patientRepository.persist(patient);
+        patientService.create(patient); //TODO le falta el Id
         return Response.status(Response.Status.CREATED).entity(patient).build();
     }
 
     @PUT
     @Path("/{id}")
     public Response updatePatient(@PathParam("id") int id, Patient patient) {
-        patient = patientRepository.update(patient);
+        patientService.update(patient);
         return Response.ok(patient).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deletePatient(@PathParam("id") Long id) {
-        var admBook = patientRepository.findById(id);
-        patientRepository.delete(admBook);
+        patientService.delete(id);
         return Response.ok().build();
     }
 

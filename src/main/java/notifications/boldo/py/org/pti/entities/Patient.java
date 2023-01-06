@@ -15,19 +15,20 @@ public class Patient {
 
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     @Column
     @NotNull
-    public String patient_id;
+    private String patientId;
 
     @Column
-    public String givenName;
+    private String givenName;
 
     @Column
     public String familyName;
 
     @OneToMany(mappedBy = "patient", orphanRemoval = true)
     private Set<Device> device;
+
 }
 

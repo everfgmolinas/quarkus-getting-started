@@ -20,11 +20,11 @@ public class Device {
     private int id;
 
     @NotNull
-    public String token_device;
+    public String tokenDevice;
 
     // describe if the device is Android, IOs or Other
     @NotNull
-    public String sistem_operative;
+    public String operativeSystem;
 
     @ColumnDefault("TRUE")
     public Boolean active;
@@ -32,4 +32,5 @@ public class Device {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     public Patient patient;
+
 }
