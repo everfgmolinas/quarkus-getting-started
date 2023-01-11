@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import notifications.boldo.py.org.pti.JsonWebToken;
 import notifications.boldo.py.org.pti.entities.Patient;
 
 import java.util.List;
@@ -19,9 +20,16 @@ import notifications.boldo.py.org.pti.services.PatientService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PatientController {
 
+    JsonWebToken jwt;
+
     @Inject
     PatientService patientService;
 
+
+    //@HeaderParam("Authorization")
+    //public void setJwt(String header) {
+    //    this.jwt = new JsonWebToken(header);
+    //}
 
     @GET
     public List<Patient> getPatients() {
