@@ -21,12 +21,12 @@ public class PatientService {
   }
 
   public Patient findById(String id){
-    return patientRepository.find("patientId",id).firstResult();
+    return patientRepository.find("fhierId",id).firstResult();
   }
 
   public void delete(Long id) {
-    var admBook = patientRepository.findById(id);
-    patientRepository.delete(admBook);
+    var patient = patientRepository.findById(id);
+    patientRepository.delete(patient);
   }
 
   public void update(Patient patient) {

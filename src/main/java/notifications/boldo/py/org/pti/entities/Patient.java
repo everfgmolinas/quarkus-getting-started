@@ -19,7 +19,7 @@ public class Patient {
 
     @Column
     @NotNull
-    private String patientId;
+    private String fhierId;
 
     @Column
     private String givenName;
