@@ -17,7 +17,7 @@ public class Device {
 
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     @NotNull
     public String tokenDevice;
