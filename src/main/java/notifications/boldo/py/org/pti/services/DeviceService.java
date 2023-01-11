@@ -28,7 +28,6 @@ public class DeviceService {
   }
 
   public List<Device> findByFhierId(String id){
-    System.out.println("asfasfasfa");
     try{
 
       var result = deviceRepository.list("from Device d, Patient p where d.patient.id = p.id and p.fhierId = ?1", id);
